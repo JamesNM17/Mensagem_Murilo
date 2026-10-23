@@ -1,278 +1,527 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#e0f0e4">
-  <title>Professora Murilo</title>
-  <style>
-    :root {
-      --ink: #254734;
-      --green: #4d8c68;
-      --green-dark: #286044;
-      --green-soft: #edf7ef;
-      --green-mid: #cfe6d4;
-      --mint: #f6fbf6;
-      --gold: #eacb79;
-      --white: #fffefb;
-      --shadow: 0 22px 60px rgba(39, 91, 59, .16);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 34px 16px 42px;
-      background:
-        radial-gradient(circle at 12% 8%, rgba(255,255,255,.9) 0 3px, transparent 4px),
-        radial-gradient(circle at 88% 23%, rgba(255,255,255,.8) 0 4px, transparent 5px),
-        linear-gradient(145deg, #dcefe0, #f5faf4 50%, #c9e5d0);
-      color: var(--ink);
-      font-family: ui-rounded, "Trebuchet MS", "Segoe UI", sans-serif;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#e0f0e4">
+    <title>Professora Murilo</title>
+    <style>
+        :root {
+            --ink: #254734;
+            --green: #4d8c68;
+            --green-dark: #286044;
+            --green-soft: #edf7ef;
+            --green-mid: #cfe6d4;
+            --mint: #f6fbf6;
+            --gold: #eacb79;
+            --white: #fffefb;
+            --shadow: 0 22px 60px rgba(39, 91, 59, .16);
+        }
 
-    /* Brilho ambiente e símbolos de código em uma camada que nunca bloqueia cliques. */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: -18%;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse at 16% 28%, rgba(255,255,255,.62), transparent 34%),
-        radial-gradient(ellipse at 82% 70%, rgba(111,190,135,.22), transparent 35%),
-        radial-gradient(ellipse at 52% 8%, rgba(190,229,196,.32), transparent 32%);
-      filter: blur(10px);
-      animation: ambient-drift 18s ease-in-out infinite alternate;
-    }
-    .top-note, .letter, .footer { position: relative; z-index: 1; }
-    .particle-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      overflow: hidden;
-      pointer-events: none;
-      contain: strict;
-    }
-    .dev-particle {
-      position: absolute;
-      top: 112vh;
-      left: var(--left, 50%);
-      color: var(--particle-color, #397a53);
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-      font-size: var(--size, 16px);
-      font-weight: 750;
-      line-height: 1;
-      letter-spacing: -.055em;
-      white-space: nowrap;
-      user-select: none;
-      opacity: 0;
-      text-shadow: 0 0 7px rgba(255,255,255,.96), 0 0 18px var(--glow, rgba(91,164,111,.48));
-      filter: drop-shadow(0 0 5px rgba(99,174,119,.18));
-      animation: particle-rise var(--duration, 20s) linear var(--delay, 0s) infinite;
-      will-change: transform, opacity;
-    }
-    .dev-particle.symbol-bright {
-      font-weight: 900;
-      text-shadow: 0 0 7px rgba(255,255,255,.98), 0 0 15px var(--glow, rgba(91,164,111,.55)), 0 0 28px rgba(91,164,111,.28);
-    }
-    .ambient-spark {
-      position: absolute;
-      left: var(--left, 50%);
-      top: var(--top, 50%);
-      width: var(--dot-size, 4px);
-      height: var(--dot-size, 4px);
-      border-radius: 50%;
-      background: rgba(255,255,255,.95);
-      box-shadow: 0 0 8px 2px rgba(117,190,135,.48), 0 0 20px 5px rgba(117,190,135,.18);
-      opacity: 0;
-      animation: sparkle-pulse var(--spark-duration, 4s) ease-in-out var(--delay, 0s) infinite;
-    }
-    .ambient-spark.cross::before, .ambient-spark.cross::after {
-      content: "";
-      position: absolute;
-      inset: -5px 1px;
-      border-radius: 4px;
-      background: rgba(255,255,255,.78);
-      transform: rotate(45deg);
-    }
-    .ambient-spark.cross::after { transform: rotate(-45deg); }
-    @keyframes particle-rise {
-      0%   { transform: translate3d(0, 12vh, 0) rotate(var(--start-rotation, -12deg)) scale(.76); opacity: 0; }
-      10%  { opacity: var(--alpha, .30); }
-      32%  { transform: translate3d(var(--drift-near, 8px), -28vh, 0) rotate(0deg) scale(1); }
-      58%  { transform: translate3d(var(--drift-mid, 22px), -68vh, 0) rotate(var(--mid-rotation, 10deg)) scale(1.04); opacity: var(--alpha, .30); }
-      88%  { opacity: .20; }
-      100% { transform: translate3d(var(--drift, 32px), -128vh, 0) rotate(var(--rotation, 22deg)) scale(.85); opacity: 0; }
-    }
-    @keyframes sparkle-pulse {
-      0%, 100% { transform: scale(.45); opacity: 0; }
-      45% { transform: scale(1.2); opacity: var(--spark-alpha, .7); }
-      65% { transform: scale(.8); opacity: .35; }
-    }
-    @keyframes ambient-drift {
-      from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
-      to { transform: translate3d(1.5%, 1%, 0) scale(1.06); }
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .top-note {
-      color: #427456; font-size: .82rem; font-weight: 800;
-      letter-spacing: .15em; text-transform: uppercase;
-      margin: 3px 0 16px; text-align: center;
-    }
-    .letter {
-      position: relative; width: min(100%, 760px);
-      background: var(--white); border: 2px solid #c0dfc7;
-      border-radius: 26px; padding: clamp(24px, 5vw, 52px);
-      box-shadow: var(--shadow); overflow: hidden;
-    }
-    .letter::before {
-      content: ""; position: absolute; inset: 12px;
-      border: 2px dashed #c0dfc7; border-radius: 18px; pointer-events: none;
-    }
-    .content { position: relative; z-index: 1; }
-    .stars { text-align: center; font-size: 1.4rem; letter-spacing: .45em; color: var(--green); margin-bottom: 6px; }
-    h1 { text-align: center; color: var(--green-dark); font-size: clamp(2.1rem, 7vw, 4rem); line-height: 1.02; letter-spacing: -.045em; margin: 0; }
-    .subtitle {
-      background: var(--green-soft); border-radius: 999px; color: var(--green-dark);
-      width: fit-content; max-width: 100%; margin: 14px auto 28px; padding: 10px 19px;
-      text-align: center; font-size: clamp(.95rem, 2.8vw, 1.15rem); font-weight: 800;
-    }
-    .salutation { font-size: 1.22rem; font-weight: 900; margin: 0 0 15px; }
-    p { line-height: 1.78; font-size: 1.03rem; margin: 0 0 16px; }
-    .highlight { background: linear-gradient(transparent 58%, #d9efde 58%); font-weight: 800; }
-    .green-note { margin: 25px 0; padding: 19px 21px; background: #eff8f0; border-left: 5px solid #75b687; border-radius: 14px; }
-    .green-note p { margin: 0; }
-    .poem { margin: 29px auto; padding: 23px 18px; max-width: 520px; text-align: center; background: linear-gradient(135deg, #eaf6ec, #f7fbf6); border-radius: 20px; border: 1px solid #cfe7d4; }
-    .poem h2 { margin: 0 0 14px; color: var(--green-dark); font-size: 1.25rem; }
-    .poem p { margin: 0; line-height: 1.9; font-style: italic; }
-    .message-card { margin: 25px 0; padding: 20px; text-align: center; border: 1px solid #d7eadb; border-radius: 18px; background: #fbfefb; }
-    .message-card strong { display: block; color: var(--green-dark); font-size: 1.17rem; margin-bottom: 7px; }
-    .closing { text-align: center; margin: 28px auto 5px; color: var(--green-dark); font-weight: 900; font-size: clamp(1.13rem, 3.4vw, 1.45rem); line-height: 1.5; }
-    .signature { text-align: center; margin-top: 18px; line-height: 1.8; }
-    .signature b { font-size: 1.12rem; color: var(--green-dark); }
-    .footer { color: #427456; text-align: center; font-size: .85rem; margin-top: 18px; }
-    .heart { color: #4e9a69; }
-    @media (max-width: 520px) {
-      body { padding: 17px 10px 28px; }
-      .letter { padding: 28px 22px; border-radius: 20px; }
-      .letter::before { inset: 8px; border-radius: 14px; }
-      p { font-size: .98rem; }
-      .dev-particle { font-size: calc(var(--size, 16px) * .86); }
-    }
-    @media print {
-      body { background: white; padding: 0; }
-      .top-note, .footer, .particle-layer, body::before { display: none !important; }
-      .letter { box-shadow: none; border: 1px solid #b0d2b8; width: 100%; max-width: none; }
-      .letter::before { inset: 10px; }
-      @page { margin: 12mm; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      body::before { animation: none; }
-      .particle-layer { display: none; }
-    }
-  </style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 34px 16px 42px;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(255, 255, 255, .9) 0 3px, transparent 4px),
+                radial-gradient(circle at 88% 23%, rgba(255, 255, 255, .8) 0 4px, transparent 5px),
+                linear-gradient(145deg, #dcefe0, #f5faf4 50%, #c9e5d0);
+            color: var(--ink);
+            font-family: ui-rounded, "Trebuchet MS", "Segoe UI", sans-serif;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -18%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 16% 28%, rgba(255, 255, 255, .62), transparent 34%),
+                radial-gradient(ellipse at 82% 70%, rgba(111, 190, 135, .22), transparent 35%),
+                radial-gradient(ellipse at 52% 8%, rgba(190, 229, 196, .32), transparent 32%);
+            filter: blur(10px);
+            animation: ambient-drift 18s ease-in-out infinite alternate;
+        }
+
+        .top-note,
+        .letter,
+        .footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .particle-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            overflow: hidden;
+            pointer-events: none;
+            contain: strict;
+        }
+
+        .dev-particle {
+            position: absolute;
+            top: 112vh;
+            left: var(--left, 50%);
+            color: var(--particle-color, #397a53);
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: var(--size, 16px);
+            font-weight: 750;
+            line-height: 1;
+            letter-spacing: -.055em;
+            white-space: nowrap;
+            user-select: none;
+            opacity: 0;
+            text-shadow: 0 0 7px rgba(255, 255, 255, .96), 0 0 18px var(--glow, rgba(91, 164, 111, .48));
+            filter: drop-shadow(0 0 5px rgba(99, 174, 119, .18));
+            animation: particle-rise var(--duration, 20s) linear var(--delay, 0s) infinite;
+            will-change: transform, opacity;
+        }
+
+        .dev-particle.symbol-bright {
+            font-weight: 900;
+            text-shadow: 0 0 7px rgba(255, 255, 255, .98), 0 0 15px var(--glow, rgba(91, 164, 111, .55)), 0 0 28px rgba(91, 164, 111, .28);
+        }
+
+        .ambient-spark {
+            position: absolute;
+            left: var(--left, 50%);
+            top: var(--top, 50%);
+            width: var(--dot-size, 4px);
+            height: var(--dot-size, 4px);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .95);
+            box-shadow: 0 0 8px 2px rgba(117, 190, 135, .48), 0 0 20px 5px rgba(117, 190, 135, .18);
+            opacity: 0;
+            animation: sparkle-pulse var(--spark-duration, 4s) ease-in-out var(--delay, 0s) infinite;
+        }
+
+        .ambient-spark.cross::before,
+        .ambient-spark.cross::after {
+            content: "";
+            position: absolute;
+            inset: -5px 1px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, .78);
+            transform: rotate(45deg);
+        }
+
+        .ambient-spark.cross::after {
+            transform: rotate(-45deg);
+        }
+
+        @keyframes particle-rise {
+            0% {
+                transform: translate3d(0, 12vh, 0) rotate(var(--start-rotation, -12deg)) scale(.76);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: var(--alpha, .30);
+            }
+
+            32% {
+                transform: translate3d(var(--drift-near, 8px), -28vh, 0) rotate(0deg) scale(1);
+            }
+
+            58% {
+                transform: translate3d(var(--drift-mid, 22px), -68vh, 0) rotate(var(--mid-rotation, 10deg)) scale(1.04);
+                opacity: var(--alpha, .30);
+            }
+
+            88% {
+                opacity: .20;
+            }
+
+            100% {
+                transform: translate3d(var(--drift, 32px), -128vh, 0) rotate(var(--rotation, 22deg)) scale(.85);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkle-pulse {
+
+            0%,
+            100% {
+                transform: scale(.45);
+                opacity: 0;
+            }
+
+            45% {
+                transform: scale(1.2);
+                opacity: var(--spark-alpha, .7);
+            }
+
+            65% {
+                transform: scale(.8);
+                opacity: .35;
+            }
+        }
+
+        @keyframes ambient-drift {
+            from {
+                transform: translate3d(-1.5%, -1%, 0) scale(1);
+            }
+
+            to {
+                transform: translate3d(1.5%, 1%, 0) scale(1.06);
+            }
+        }
+
+        .top-note {
+            color: #427456;
+            font-size: .82rem;
+            font-weight: 800;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin: 3px 0 16px;
+            text-align: center;
+        }
+
+        .letter {
+            position: relative;
+            width: min(100%, 760px);
+            background: var(--white);
+            border: 2px solid #c0dfc7;
+            border-radius: 26px;
+            padding: clamp(24px, 5vw, 52px);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .letter::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border: 2px dashed #c0dfc7;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stars {
+            text-align: center;
+            font-size: 1.4rem;
+            letter-spacing: .45em;
+            color: var(--green);
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--green-dark);
+            font-size: clamp(2.1rem, 7vw, 4rem);
+            line-height: 1.02;
+            letter-spacing: -.045em;
+            margin: 0;
+        }
+
+        .subtitle {
+            background: var(--green-soft);
+            border-radius: 999px;
+            color: var(--green-dark);
+            width: fit-content;
+            max-width: 100%;
+            margin: 14px auto 28px;
+            padding: 10px 19px;
+            text-align: center;
+            font-size: clamp(.95rem, 2.8vw, 1.15rem);
+            font-weight: 800;
+        }
+
+        .salutation {
+            font-size: 1.22rem;
+            font-weight: 900;
+            margin: 0 0 15px;
+        }
+
+        p {
+            line-height: 1.78;
+            font-size: 1.03rem;
+            margin: 0 0 16px;
+        }
+
+        .highlight {
+            background: linear-gradient(transparent 58%, #d9efde 58%);
+            font-weight: 800;
+        }
+
+        .green-note {
+            margin: 25px 0;
+            padding: 19px 21px;
+            background: #eff8f0;
+            border-left: 5px solid #75b687;
+            border-radius: 14px;
+        }
+
+        .green-note p {
+            margin: 0;
+        }
+
+        .poem {
+            margin: 29px auto;
+            padding: 23px 18px;
+            max-width: 520px;
+            text-align: center;
+            background: linear-gradient(135deg, #eaf6ec, #f7fbf6);
+            border-radius: 20px;
+            border: 1px solid #cfe7d4;
+        }
+
+        .poem h2 {
+            margin: 0 0 14px;
+            color: var(--green-dark);
+            font-size: 1.25rem;
+        }
+
+        .poem p {
+            margin: 0;
+            line-height: 1.9;
+            font-style: italic;
+        }
+
+        .message-card {
+            margin: 25px 0;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #d7eadb;
+            border-radius: 18px;
+            background: #fbfefb;
+        }
+
+        .message-card strong {
+            display: block;
+            color: var(--green-dark);
+            font-size: 1.17rem;
+            margin-bottom: 7px;
+        }
+
+        .closing {
+            text-align: center;
+            margin: 28px auto 5px;
+            color: var(--green-dark);
+            font-weight: 900;
+            font-size: clamp(1.13rem, 3.4vw, 1.45rem);
+            line-height: 1.5;
+        }
+
+        .signature {
+            text-align: center;
+            margin-top: 18px;
+            line-height: 1.8;
+        }
+
+        .signature b {
+            font-size: 1.12rem;
+            color: var(--green-dark);
+        }
+
+        .footer {
+            color: #427456;
+            text-align: center;
+            font-size: .85rem;
+            margin-top: 18px;
+        }
+
+        .heart {
+            color: #4e9a69;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 17px 10px 28px;
+            }
+
+            .letter {
+                padding: 28px 22px;
+                border-radius: 20px;
+            }
+
+            .letter::before {
+                inset: 8px;
+                border-radius: 14px;
+            }
+
+            p {
+                font-size: .98rem;
+            }
+
+            .dev-particle {
+                font-size: calc(var(--size, 16px) * .86);
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .top-note,
+            .footer,
+            .particle-layer,
+            body::before {
+                display: none !important;
+            }
+
+            .letter {
+                box-shadow: none;
+                border: 1px solid #b0d2b8;
+                width: 100%;
+                max-width: none;
+            }
+
+            .letter::before {
+                inset: 10px;
+            }
+
+            @page {
+                margin: 12mm;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            body::before {
+                animation: none;
+            }
+
+            .particle-layer {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div id="particle-layer" class="particle-layer" aria-hidden="true"></div>
-  <div class="top-note">Uma homenagem feita com carinho 💚</div>
-  <main class="letter" aria-label="Carta de agradecimento ao professor Murilo">
-    <div class="content">
-      <div class="stars" aria-hidden="true">✦ ✧ ✦</div>
-      <h1>Professor Murilo</h1>
-      <div class="subtitle">Uma homenagem a quem ensina e faz a diferença 💚</div>
+    <div id="particle-layer" class="particle-layer" aria-hidden="true"></div>
+    <div class="top-note">Uma homenagem feita com carinho 💚</div>
+    <main class="letter" aria-label="Carta de agradecimento ao professor Murilo">
+        <div class="content">
+            <div class="stars" aria-hidden="true">✦ ✧ ✦</div>
+            <h1>Professor Murilo</h1>
+            <div class="subtitle">Uma homenagem a quem ensina e faz a diferença 💚</div>
 
-      <p class="salutation">Murilo,</p>
-      <p>Queria aproveitar este momento para deixar registrado algo que, às vezes, a correria do dia a dia não permite dizer com calma: <span class="highlight">obrigado por ser professor</span> e por fazer parte da caminhada de tantas pessoas.</p>
-      <p>Ensinar vai muito além de apresentar conteúdos ou explicar uma matéria. Também é compartilhar experiências, despertar curiosidade, incentivar perguntas e ajudar alguém a perceber que é capaz de aprender e ir mais longe. Um bom professor pode marcar uma trajetória de maneiras que nem sempre consegue ver.</p>
-      <p>Por isso, esta carta é um pequeno gesto de reconhecimento. Obrigado pelo tempo dedicado, pela paciência em ensinar e por tudo aquilo que fica para além da sala de aula. Cada orientação, conversa ou aprendizado pode se transformar em algo importante na vida de alguém.</p>
+            <p class="salutation">Murilo,</p>
+            <p>Queria aproveitar este momento para deixar registrado algo que, às vezes, a correria do dia a dia não
+                permite dizer com calma: <span class="highlight">obrigado por ser professor</span> e por fazer parte da
+                caminhada de tantas pessoas.</p>
+            <p>Ensinar vai muito além de apresentar conteúdos ou explicar uma matéria. Também é compartilhar
+                experiências, despertar curiosidade, incentivar perguntas e ajudar alguém a perceber que é capaz de
+                aprender e ir mais longe. Um bom professor pode marcar uma trajetória de maneiras que nem sempre
+                consegue ver.</p>
+            <p>Por isso, esta carta é um pequeno gesto de reconhecimento. Obrigado pelo tempo dedicado, pela paciência
+                em ensinar e por tudo aquilo que fica para além da sala de aula. Cada orientação, conversa ou
+                aprendizado pode se transformar em algo importante na vida de alguém.</p>
 
-      <div class="green-note">
-        <p>Espero que você também receba de volta um pouco da inspiração e do conhecimento que oferece. Que nunca faltem motivos para sentir orgulho do seu trabalho, perceber o valor da sua presença e lembrar que ensinar é uma forma bonita de contribuir para o futuro.</p>
-      </div>
+            <div class="green-note">
+                <p>Espero que você também receba de volta um pouco da inspiração e do conhecimento que oferece. Que
+                    nunca faltem motivos para sentir orgulho do seu trabalho, perceber o valor da sua presença e lembrar
+                    que ensinar é uma forma bonita de contribuir para o futuro.</p>
+            </div>
 
-      <section class="poem" aria-label="Mini poesia para o professor Murilo">
-        <h2>Um pouquinho de poesia para você</h2>
-        <p>Há quem ensine apenas o que está no papel,<br>
-e quem faça nascer novas perguntas ao céu.<br>
-Com cada palavra, uma ideia a florescer,<br>
-e em cada aprendizado, um caminho a conhecer.<br><br>
-Que a vida lhe devolva o bem que faz nascer,<br>
-a coragem nos dias difíceis e razões para crescer.<br>
-Pois quem ajuda alguém a descobrir seu próprio valor<br>
-deixa no mundo uma marca que permanece com amor. 💚</p>
-      </section>
+            <section class="poem" aria-label="Mini poesia para o professor Murilo">
+                <h2>Um pouquinho de poesia para você</h2>
+                <p>Há quem ensine apenas o que está no papel,<br>
+                    e quem faça nascer novas perguntas ao céu.<br>
+                    Com cada palavra, uma ideia a florescer,<br>
+                    e em cada aprendizado, um caminho a conhecer.<br><br>
+                    Que a vida lhe devolva o bem que faz nascer,<br>
+                    a coragem nos dias difíceis e razões para crescer.<br>
+                    Pois quem ajuda alguém a descobrir seu próprio valor<br>
+                    deixa no mundo uma marca que permanece com amor. 💚</p>
+            </section>
 
-      <p>Talvez uma mensagem não consiga traduzir toda a importância de um professor, mas espero que consiga transmitir ao menos uma parte da gratidão que merece. Que você saiba que o esforço, a dedicação e o conhecimento compartilhado podem continuar fazendo diferença muito tempo depois de uma aula terminar.</p>
+            <p>Talvez uma mensagem não consiga traduzir toda a importância de um professor, mas espero que consiga
+                transmitir ao menos uma parte da gratidão que merece. Que você saiba que o esforço, a dedicação e o
+                conhecimento compartilhado podem continuar fazendo diferença muito tempo depois de uma aula terminar.
+            </p>
 
-      <div class="message-card">
-        <strong>Seu trabalho importa. Sua presença também.</strong>
-        Que você continue encontrando sentido naquilo que faz e tenha oportunidades de ver florescer tudo de bom que ajuda a construir nas pessoas ao seu redor.
-      </div>
+            <div class="message-card">
+                <strong>Seu trabalho importa. Sua presença também.</strong>
+                Que você continue encontrando sentido naquilo que faz e tenha oportunidades de ver florescer tudo de bom
+                que ajuda a construir nas pessoas ao seu redor.
+            </div>
 
-      <div class="closing">Espero que este presente alegre seu coração,<br>nem que seja só um pouquinho. <span class="heart">♥</span></div>
-      <div class="signature">Com carinho e gratidão,<br><b>uma pessoa feliz por poder lhe homenagear</b></div>
-      <div class="stars" style="margin-top:22px" aria-hidden="true">✦ 💚 ✦</div>
-    </div>
-  </main>
+            <div class="closing">Espero que este presente alegre seu coração,<br>nem que seja só um pouquinho. <span
+                    class="heart">♥</span></div>
+            <div class="signature">Com carinho e gratidão,<br><b>uma pessoa feliz por poder lhe homenagear</b></div>
+            <div class="stars" style="margin-top:22px" aria-hidden="true">✦ 💚 ✦</div>
+        </div>
+    </main>
 
-  <div class="footer">Feito por James Nascimento Matos</div>
+    <div class="footer">Feito por James Nascimento Matos</div>
 
-  <script>
-    // Partículas de desenvolvimento: variação de símbolo, brilho, trajetória e ritmo.
-    const particleLayer = document.getElementById('particle-layer');
-    const devSymbols = [
-      '</>', '{ }', '01', '&&', '=>', '()', '[]', '{}', ';', '#',
-      'API', 'SQL', 'git', 'npm', 'const', '0101', '<div>', '!=', '++', '_',
-      'CSS', 'JS', 'HTML', 'while', 'return', 'async', '&&', '||', '0x1',
-      '::', '=>', '...'
-    ];
-    const particleColors = ['#286044', '#397b53', '#4d8c68', '#70a980', '#8aba94'];
-    const isMobile = window.matchMedia('(max-width: 520px)').matches;
-    const particleCount = isMobile ? 24 : 42;
-    const sparkleCount = isMobile ? 13 : 23;
+    <script>
+        const particleLayer = document.getElementById('particle-layer');
+        const devSymbols = [
+            '</>', '{ }', '01', '&&', '=>', '()', '[]', '{}', ';', '#',
+            'API', 'SQL', 'git', 'npm', 'const', '0101', '<div>', '!=', '++', '_',
+            'CSS', 'JS', 'HTML', 'while', 'return', 'async', '&&', '||', '0x1',
+            '::', '=>', '...'
+        ];
+        const particleColors = ['#286044', '#397b53', '#4d8c68', '#70a980', '#8aba94'];
+        const isMobile = window.matchMedia('(max-width: 520px)').matches;
+        const particleCount = isMobile ? 24 : 42;
+        const sparkleCount = isMobile ? 13 : 23;
 
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('span');
-      const duration = 15 + Math.random() * 19;
-      const color = particleColors[Math.floor(Math.random() * particleColors.length)];
-      particle.className = 'dev-particle' + (Math.random() > 0.72 ? ' symbol-bright' : '');
-      particle.textContent = devSymbols[Math.floor(Math.random() * devSymbols.length)];
-      particle.style.setProperty('--left', `${Math.random() * 100}%`);
-      particle.style.setProperty('--size', `${11 + Math.random() * (isMobile ? 9 : 15)}px`);
-      particle.style.setProperty('--duration', `${duration}s`);
-      particle.style.setProperty('--delay', `${-Math.random() * duration}s`);
-      const drift = Math.round(Math.random() * 190 - 95);
-      particle.style.setProperty('--drift', `${drift}px`);
-      particle.style.setProperty('--drift-near', `${Math.round(drift * 0.28)}px`);
-      particle.style.setProperty('--drift-mid', `${Math.round(drift * 0.68)}px`);
-      particle.style.setProperty('--rotation', `${Math.round(Math.random() * 70 - 35)}deg`);
-      particle.style.setProperty('--start-rotation', `${Math.round(Math.random() * 50 - 25)}deg`);
-      particle.style.setProperty('--mid-rotation', `${Math.round(Math.random() * 30 - 15)}deg`);
-      particle.style.setProperty('--alpha', `${(0.13 + Math.random() * 0.19).toFixed(2)}`);
-      particle.style.setProperty('--particle-color', color);
-      particle.style.setProperty('--glow', `${color}88`);
-      particleLayer.appendChild(particle);
-    }
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('span');
+            const duration = 15 + Math.random() * 19;
+            const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+            particle.className = 'dev-particle' + (Math.random() > 0.72 ? ' symbol-bright' : '');
+            particle.textContent = devSymbols[Math.floor(Math.random() * devSymbols.length)];
+            particle.style.setProperty('--left', `${Math.random() * 100}%`);
+            particle.style.setProperty('--size', `${11 + Math.random() * (isMobile ? 9 : 15)}px`);
+            particle.style.setProperty('--duration', `${duration}s`);
+            particle.style.setProperty('--delay', `${-Math.random() * duration}s`);
+            const drift = Math.round(Math.random() * 190 - 95);
+            particle.style.setProperty('--drift', `${drift}px`);
+            particle.style.setProperty('--drift-near', `${Math.round(drift * 0.28)}px`);
+            particle.style.setProperty('--drift-mid', `${Math.round(drift * 0.68)}px`);
+            particle.style.setProperty('--rotation', `${Math.round(Math.random() * 70 - 35)}deg`);
+            particle.style.setProperty('--start-rotation', `${Math.round(Math.random() * 50 - 25)}deg`);
+            particle.style.setProperty('--mid-rotation', `${Math.round(Math.random() * 30 - 15)}deg`);
+            particle.style.setProperty('--alpha', `${(0.13 + Math.random() * 0.19).toFixed(2)}`);
+            particle.style.setProperty('--particle-color', color);
+            particle.style.setProperty('--glow', `${color}88`);
+            particleLayer.appendChild(particle);
+        }
 
-    // Pequenos pontos luminosos que piscam suavemente entre os símbolos.
-    for (let i = 0; i < sparkleCount; i++) {
-      const spark = document.createElement('span');
-      const cross = Math.random() > 0.68;
-      const duration = 2.8 + Math.random() * 4.6;
-      spark.className = 'ambient-spark' + (cross ? ' cross' : '');
-      spark.style.setProperty('--left', `${Math.random() * 100}%`);
-      spark.style.setProperty('--top', `${Math.random() * 100}%`);
-      spark.style.setProperty('--dot-size', `${2 + Math.random() * (cross ? 3 : 4)}px`);
-      spark.style.setProperty('--spark-duration', `${duration}s`);
-      spark.style.setProperty('--delay', `${-Math.random() * duration}s`);
-      spark.style.setProperty('--spark-alpha', `${(0.28 + Math.random() * 0.55).toFixed(2)}`);
-      particleLayer.appendChild(spark);
-    }
-  </script>
+        for (let i = 0; i < sparkleCount; i++) {
+            const spark = document.createElement('span');
+            const cross = Math.random() > 0.68;
+            const duration = 2.8 + Math.random() * 4.6;
+            spark.className = 'ambient-spark' + (cross ? ' cross' : '');
+            spark.style.setProperty('--left', `${Math.random() * 100}%`);
+            spark.style.setProperty('--top', `${Math.random() * 100}%`);
+            spark.style.setProperty('--dot-size', `${2 + Math.random() * (cross ? 3 : 4)}px`);
+            spark.style.setProperty('--spark-duration', `${duration}s`);
+            spark.style.setProperty('--delay', `${-Math.random() * duration}s`);
+            spark.style.setProperty('--spark-alpha', `${(0.28 + Math.random() * 0.55).toFixed(2)}`);
+            particleLayer.appendChild(spark);
+        }
+    </script>
 </body>
+
 </html>
